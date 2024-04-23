@@ -1,68 +1,88 @@
 const Doctor = require('../schema/Doctor');
+const upload = require('../util/uploads');
 
-exports.createDoctor = (req, res) => {
-  console.log(req.files);
+// Create a new doctor
+exports.createDoctor = async (req, res) => {
+    try {
+        if (!req.files || !req.files['photo'] || !req.files['license']) {
+            return res.status(400).json({ success: false, error: "Both photo and license images are required" });
+        }
 
-  // Check if req.files exists and if it contains photos for both the doctor and license
-  if (
-    !req.files ||
-    !req.files.photo ||
-    !Array.isArray(req.files.photo) ||
-    req.files.photo.length === 0 ||
-    !req.files.license ||
-    !Array.isArray(req.files.license) ||
-    req.files.license.length === 0
-  ) {
-    return res.status(400).json({ error: 'Photo and license files are required' });
-  }
+        const { photo, license, ...doctorData } = req.body;
+        const doctor = new Doctor({
+            ...doctorData,
+            photo: req.files['photo'][0].filename, // Assuming 'photo' is an array of files
+            license: req.files['license'][0].filename // Assuming 'license' is an array of files
+        });
+        await doctor.save();
+        res.status(201).json({ success: true, data: doctor });
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message });
+    }
+};
 
-  // Destructure the photo files from req.files and extract the filenames
-  const doctorPhoto = req.files.photo[0].filename; // Extract the filename for doctor's photo
-  const licensePhoto = req.files.license[0].filename; // Extract the filename for license photo
+exports.uploadDoctorImages = upload.fields([{ name: 'photo', maxCount: 1 }, { name: 'license', maxCount: 1 }]);
 
-  // Handle form data here
-  const {
-    email,
-    username,
-    password,
-    qualification,
-    communicationSkills,
-    experience,
-    gender,
-    age,
-    dob,
-    hobbies,
-    address,
-    phoneNumber,
-  } = req.body;
+// Get all doctors
+exports.getAllDoctors = async (req, res) => {
+    try {
+        const doctors = await Doctor.find();
+        res.status(200).json({ success: true, data: doctors });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+};
 
-  // Create a new Doctor instance with the extracted photo filenames and other fields
-  const newDoctor = new Doctor({
-    email,
-    username,
-    password,
-    photo: doctorPhoto, // Assign the doctor's photo filename
-    license: licensePhoto, // Assign the license photo filename
-    qualification,
-    communicationSkills,
-    experience,
-    gender,
-    age,
-    dob,
-    hobbies,
-    address,
-    phoneNumber,
-  });
+// Get doctors by status
+exports.getDoctorsByStatus = async (req, res) => {
+    try {
+        const { status } = req.params;
+        if (!['pending', 'accepted', 'rejected'].includes(status)) {
+            return res.status(400).json({ success: false, error: 'Invalid status' });
+        }
 
-  // Save the new Doctor instance
-  newDoctor
-    .save()
-    .then((doctor) => {
-      res.json({ success: true, doctor });
-    })
-    .catch((error) => {
-      console.error('Error creating doctor:', error);
-      res.status(500).json({ error: 'Error creating doctor' });
-    });
-    console.log(newDoctor);
+        const doctors = await Doctor.find({ status });
+        res.status(200).json({ success: true, data: doctors });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+};
+
+// Get a single doctor by ID
+exports.getDoctorById = async (req, res) => {
+    try {
+        const doctor = await Doctor.findById(req.params.id);
+        if (!doctor) {
+            return res.status(404).json({ success: false, error: 'Doctor not found' });
+        }
+        res.status(200).json({ success: true, data: doctor });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+};
+
+// Update a doctor by ID
+exports.updateDoctor = async (req, res) => {
+    try {
+        const doctor = await Doctor.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+        if (!doctor) {
+            return res.status(404).json({ success: false, error: 'Doctor not found' });
+        }
+        res.status(200).json({ success: true, data: doctor });
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message });
+    }
+};
+
+// Delete a doctor by ID
+exports.deleteDoctor = async (req, res) => {
+    try {
+        const doctor = await Doctor.findByIdAndDelete(req.params.id);
+        if (!doctor) {
+            return res.status(404).json({ success: false, error: 'Doctor not found' });
+        }
+        res.status(200).json({ success: true, data: {} });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
 };

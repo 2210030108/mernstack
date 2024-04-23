@@ -1,218 +1,391 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import axios from "axios";
-const axiosInstance = axios.create({
-  baseURL: "http://localhost:3000", // Update with your backend URL
-});
-const DoctorReg = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    username: "",
-    password: "",
-    license: "", // Example: license field
-    qualification: "", // Example: qualification field
-    communicationSkills: "", // Example: communicationSkills field
-    experience: "", // Example: experience field
-    gender: "", // Example: gender field
-    age: "", // Example: age field
-    dob: "", // Example: dob field
-    hobbies: "", // Example: hobbies field
-    address: "", // Example: address field
-    phoneNumber: "", // Example: phoneNumber field
-    // Add more fields as needed
-  });
+import {
+  TextField,
+  Button,
+  Grid,
+  Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  FormControlLabel,
+  Checkbox,
+  Alert,
+} from "@mui/material";
 
+const DoctorSignup = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    contact: "",
+    photo: null,
+    license: null,
+    specialization: "",
+    experienceYears: "",
+    education: "",
+    qualifications: [],
+    consultationFee: "",
+    availability: {
+      days: [],
+      timings: "",
+    },
+    languages: [],
+    address: {
+      street: "",
+      city: "",
+      state: "",
+      country: "",
+      zip: "",
+    },
+  });
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const handleChange = (e) => {
-    // If the input is a file input (type === 'file'), handle it separately
-    if (e.target.type === "file") {
-      // Update the formData directly with the selected file
-      setFormData({ ...formData, photo: e.target.files });
+    const { name, value } = e.target;
+    const [parent, child] = name.split('.'); // Split the nested property name
+    if (parent === 'availability') {
+        setFormData(prevState => ({
+            ...prevState,
+            [parent]: {
+                ...prevState[parent],
+                [child]: value
+            }
+        }));
     } else {
-      // For other input types, handle them normally
-      setFormData({ ...formData, [e.target.name]: e.target.value });
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
     }
+};
+
+  const handleCheckboxChange = (e) => {
+    const { name, value } = e.target;
+    const isChecked = e.target.checked;
+
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: isChecked
+        ? [...prevState[name], value]
+        : prevState[name].filter((item) => item !== value),
+    }));
   };
+
+  const handleFileChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.files[0],
+    });
+  };
+  const handleAvailabilityChange = (e) => {
+    setFormData({
+        ...formData,
+        availability: {
+            ...formData.availability,
+            days: e.target.value, // Set selected days directly
+        },
+    });
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
     try {
-      const formData = new FormData();
-  
-      // Append other form fields
-      formData.append('email', formData.email);
-      formData.append('username', formData.username);
-      // Append other fields similarly
-  
-      // Append photo file
-      formData.append('photo', e.target.photo.files[0]); // Append the file object itself
-  
-      // Append license file
-      formData.append('license', e.target.license.files[0]); // Append the file object itself
-  
-      // Make a POST request with the FormData object
-      const res = await axiosInstance.post('/doctor', formData);
-      console.log(res.data);
-  
-    } catch (error) {
-      console.error('Error submitting data:', error);
+      const formDataToSend = new FormData();
+      for (const key in formData) {
+        if (typeof formData[key] === "object" && formData[key] !== null) {
+          if (key === "availability") {
+            formDataToSend.append(key, JSON.stringify(formData[key]));
+          } else {
+            formDataToSend.append(key, formData[key]);
+          }
+        } else {
+          formDataToSend.append(key, formData[key]);
+        }
+      }
+
+      const res = await axios.post("http://localhost:3000/api/doc/doc", formDataToSend);
+      console.log(res.data); // Assuming the response contains doctor data with status
+      console.log(formDataToSend);
+      setSuccessMessage("Doctor signed up successfully.");
+
+      // Redirect to admin panel or display appropriate message
+    } catch (err) {
+      console.error(err);
+      setErrorMessage("Failed to sign up doctor.");
       // Handle error
     }
   };
-  
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
-      className="bg-white min-h-screen flex justify-center items-center"
-    >
-      <div className="max-w-md w-full bg-gray-100 p-8 rounded-lg shadow-lg">
-        <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">
-          Doctor Registration
-        </h1>
+    <Grid container justifyContent="center" alignItems="center" style={{ height: "100vh" }}>
+    <Grid item xs={12} sm={10} md={8} lg={6}>
         <form onSubmit={handleSubmit}>
-          <input
-            type="email"
+          <Typography variant="h4" gutterBottom>
+            Doctor Signup
+          </Typography>
+          <TextField
+            label="Name"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+          <TextField
+            label="Email"
+            variant="outlined"
+            fullWidth
+            margin="normal"
             name="email"
             value={formData.email}
             onChange={handleChange}
-            placeholder="Email Address"
             required
-            className="w-full px-4 py-2 mb-4 rounded border border-gray-400 focus:outline-none focus:border-blue-500"
           />
-          <input
-            type="text"
-            name="username"
-            value={formData.username}
+          <TextField
+            label="Contact"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            name="contact"
+            value={formData.contact}
             onChange={handleChange}
-            placeholder="Username"
             required
-            className="w-full px-4 py-2 mb-4 rounded border border-gray-400 focus:outline-none focus:border-blue-500"
           />
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Password"
-            required
-            className="w-full px-4 py-2 mb-4 rounded border border-gray-400 focus:outline-none focus:border-blue-500"
-          />
+          {/* File input for photo */}
           <input
             type="file"
-            name="license"
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-4 rounded border border-gray-400 focus:outline-none focus:border-blue-500"
+            accept="image/*"
+            name="photo"
+            onChange={handleFileChange}
+            style={{ display: "none" }}
+            id="photo-upload"
           />
-          <input
-            type="text"
-            name="qualification"
-            value={formData.qualification}
-            onChange={handleChange}
-            placeholder="Qualification"
-            required
-            className="w-full px-4 py-2 mb-4 rounded border border-gray-400 focus:outline-none focus:border-blue-500"
-          />
-          <input
-            type="text"
-            name="communicationSkills"
-            value={formData.communicationSkills}
-            onChange={handleChange}
-            placeholder="Communication Skills"
-            required
-            className="w-full px-4 py-2 mb-4 rounded border border-gray-400 focus:outline-none focus:border-blue-500"
-          />
-          <input
-            type="number"
-            name="experience"
-            value={formData.experience}
-            onChange={handleChange}
-            placeholder="Experience"
-            required
-            className="w-full px-4 py-2 mb-4 rounded border border-gray-400 focus:outline-none focus:border-blue-500"
-          />
-          <input
-            type="text"
-            name="gender"
-            value={formData.gender}
-            onChange={handleChange}
-            placeholder="Gender"
-            required
-            className="w-full px-4 py-2 mb-4 rounded border border-gray-400 focus:outline-none focus:border-blue-500"
-          />
-          <input
-            type="number"
-            name="age"
-            value={formData.age}
-            onChange={handleChange}
-            placeholder="Age"
-            required
-            className="w-full px-4 py-2 mb-4 rounded border border-gray-400 focus:outline-none focus:border-blue-500"
-          />
-          <input
-            type="text"
-            name="dob"
-            value={formData.dob}
-            onChange={handleChange}
-            placeholder="Date of Birth"
-            required
-            className="w-full px-4 py-2 mb-4 rounded border border-gray-400 focus:outline-none focus:border-blue-500"
-          />
-          <input
-            type="text"
-            name="hobbies"
-            value={formData.hobbies}
-            onChange={handleChange}
-            placeholder="Hobbies"
-            required
-            className="w-full px-4 py-2 mb-4 rounded border border-gray-400 focus:outline-none focus:border-blue-500"
-          />
-          <input
-            type="text"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            placeholder="Address"
-            required
-            className="w-full px-4 py-2 mb-4 rounded border border-gray-400 focus:outline-none focus:border-blue-500"
-          />
-          <input
-            type="tel"
-            name="phoneNumber"
-            value={formData.phoneNumber}
-            onChange={handleChange}
-            placeholder="Phone Number"
-            required
-            className="w-full px-4 py-2 mb-4 rounded border border-gray-400 focus:outline-none focus:border-blue-500"
-          />
-          <input
-            type="file"
-            name="photo" // Make sure the name attribute is "photo"
-            onChange={handleChange} // Ensure this onChange event handler is correctly implemented
-            className="w-full px-4 py-2 mb-4 rounded border border-gray-400 focus:outline-none focus:border-blue-500"
-          />
+          <label htmlFor="photo-upload">
+            <Button
+              component="span"
+              variant="outlined"
+              fullWidth
+              style={{ marginTop: "10px" }}
+            >
+              Upload Photo
+            </Button>
+          </label>
+          {/* Display selected filename for photo */}
+          {formData.photo && (
+            <Typography variant="body1">{formData.photo.name}</Typography>
+          )}
 
-          {/* Add more input fields and handlers */}
-          <button
+          {/* File input for license */}
+          <input
+            type="file"
+            accept="image/*"
+            name="license"
+            onChange={handleFileChange}
+            style={{ display: "none" }}
+            id="license-upload"
+          />
+          <label htmlFor="license-upload">
+            <Button
+              component="span"
+              variant="outlined"
+              fullWidth
+              style={{ marginTop: "10px" }}
+            >
+              Upload License
+            </Button>
+          </label>
+          {/* Display selected filename for license */}
+          {formData.license && (
+            <Typography variant="body1">{formData.license.name}</Typography>
+          )}
+          <TextField
+            label="Specialization"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            name="specialization"
+            value={formData.specialization}
+            onChange={handleChange}
+            required
+          />
+          <TextField
+            label="Experience (Years)"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            type="number"
+            name="experienceYears"
+            value={formData.experienceYears}
+            onChange={handleChange}
+            required
+          />
+          <TextField
+            label="Education"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            name="education"
+            value={formData.education}
+            onChange={handleChange}
+            required
+          />
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Qualifications</InputLabel>
+            <Select
+              multiple
+              value={formData.qualifications}
+              onChange={handleChange}
+              inputProps={{ name: "qualifications" }}
+              variant="outlined"
+              required
+            >
+              <MenuItem value="MBBS">MBBS</MenuItem>
+              <MenuItem value="MD">MD</MenuItem>
+              <MenuItem value="MS">MS</MenuItem>
+              <MenuItem value="DM">DM</MenuItem>
+              <MenuItem value="MCh">MCh</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
+            label="Consultation Fee"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            type="number"
+            name="consultationFee"
+            value={formData.consultationFee}
+            onChange={handleChange}
+            required
+          />
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Languages</InputLabel>
+            <Select
+              multiple
+              value={formData.languages}
+              onChange={handleChange}
+              inputProps={{ name: "languages" }}
+              variant="outlined"
+              required
+            >
+              <MenuItem value="English">English</MenuItem>
+              <MenuItem value="Spanish">Spanish</MenuItem>
+              <MenuItem value="French">French</MenuItem>
+              <MenuItem value="German">German</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Availability</InputLabel>
+            <Select
+              multiple
+              value={formData.availability.days}
+              onChange={handleAvailabilityChange}
+              inputProps={{ name: "availability.days" }}
+              variant="outlined"
+              required
+            >
+              {[
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday",
+              ].map((day) => (
+                <MenuItem key={day} value={day}>
+                  {day}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <TextField
+            label="Timings"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            name="availability.timings"
+            value={formData.availability.timings}
+            onChange={handleChange}
+            required
+          />
+          <TextField
+            label="Street"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            name="address.street"
+            value={formData.address.street}
+            onChange={handleChange}
+            required
+          />
+          <TextField
+            label="City"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            name="address.city"
+            value={formData.address.city}
+            onChange={handleChange}
+            required
+          />
+          <TextField
+            label="ZIP"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            name="address.zip"
+            value={formData.address.zip}
+            onChange={handleChange}
+            required
+          />
+          <TextField
+            label="State"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            name="address.state"
+            value={formData.address.state}
+            onChange={handleChange}
+            required
+          />
+          <TextField
+            label="Country"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            name="address.country"
+            value={formData.address.country}
+            onChange={handleChange}
+            required
+          />
+          {successMessage && (
+            <Alert severity="success" onClose={() => setSuccessMessage("")}>
+              {successMessage}
+            </Alert>
+          )}
+          {errorMessage && (
+            <Alert severity="error" onClose={() => setErrorMessage("")}>
+              {errorMessage}
+            </Alert>
+          )}
+
+          <Button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-300"
+            variant="contained"
+            color="primary"
+            fullWidth
+            style={{ marginTop: "20px" }}
           >
             Submit
-          </button>
+          </Button>
         </form>
-        <div className="mt-4 text-center text-gray-700">
-          Already a doctor?{" "}
-          <Link to="/login" className="text-blue-500 hover:underline">
-            Login Here
-          </Link>
-        </div>
-      </div>
-    </motion.div>
+      </Grid>
+    </Grid>
   );
 };
 
-export default DoctorReg;
+export default DoctorSignup;
