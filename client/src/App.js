@@ -35,6 +35,8 @@ import MedicalRecordEdit from "./Billingsec/MedicalRecordEdit";
 import MedicalRecordsViewOnly from "./Billingsec/MedicalRecordsViewOnly";
 import MapContainer from "./home/findlocation/MapContainer";
 import ContentPage from "./home/ContentPage";
+import AccountRegistration from "./Accounts/AccountRegistration";
+import TabbedPage from "./components/Tabbedpage";
 function App() {
   return (
     <BrowserRouter>
@@ -72,6 +74,8 @@ function App() {
         <Route path="/medform/view/only" element={<MedicalRecordsViewOnly/>}></Route>
         <Route path="/medform/edit/:id" element={<MedicalRecordEdit/>}></Route>
         <Route path="/locations" element={<MapContainer/>}></Route>
+        <Route path="/accountsreg" element={<AccountRegistration/>}></Route>
+        <Route path="/Tabbing" element={<TabbedPage/>}></Route>
       </Routes>
     </BrowserRouter>
   );

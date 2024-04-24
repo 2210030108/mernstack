@@ -26,7 +26,7 @@ connectDB();
 
 // Middleware
 app.use(express.json());
-app.use(cors(corsOptions)); // Enable CORS with options
+app.use(cors(corsOptions)); 
 app.use(express.static('uploads')); // Serve static files
 app.use(express.static('client/src/departments')); // Serve static files
 // Routes

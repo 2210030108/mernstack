@@ -1,8 +1,8 @@
 import React from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
 import { motion } from 'framer-motion';
-
-const Hero = ({ title, imageUrl }) => {
+import img from '../home/departments/hero.png';
+const Hero = () => {
   const theme = useTheme();
 
   return (
@@ -25,15 +25,16 @@ const Hero = ({ title, imageUrl }) => {
         sx={{ textAlign: 'center' }}
       >
         <Typography variant="h2" component="h1">
-          {title}
+          
         </Typography>
         <Typography variant="body1" sx={{ mt: theme.spacing(2) }}>
-          ZeeCare Medical Institute is a state-of-the-art facility dedicated
-          to providing comprehensive healthcare services with compassion and
-          expertise. Our team of skilled professionals is committed to
-          delivering personalized care tailored to each patient's needs. At
-          ZeeCare, we prioritize your well-being, ensuring a harmonious
-          journey towards optimal health and wellness.
+        MYStudentClinic is an advanced healthcare center devoted to offering extensive medical services with empathy and proficiency. Our team of proficient experts is dedicated to delivering individualized care customized to meet every patient's requirements. At MYStudentClinic, we place your health and wellness at the forefront, guaranteeing a seamless path toward achieving optimal well-being.
+
+
+
+
+
+
         </Typography>
       </Box>
       <Box
@@ -44,7 +45,7 @@ const Hero = ({ title, imageUrl }) => {
         className="banner"
         sx={{ mt: theme.spacing(4) }}
       >
-        <img src={imageUrl} alt="hero" className="animated-image" />
+        <img src={img} alt="hero" className="animated-image" />
         {/* Ensure you have the rights to use any images you include */}
       </Box>
     </Box>

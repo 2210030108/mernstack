@@ -6,34 +6,70 @@ import {
   Toolbar,
   IconButton,
   Typography,
-  Button,
   Avatar,
   Menu,
   MenuItem,
 } from '@mui/material';
-import AssignmentIcon from '@mui/icons-material/Assignment';
+import MenuIcon from '@mui/icons-material/Menu';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import WorkIcon from '@mui/icons-material/Work';
+import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import GoogleIcon from '@mui/icons-material/Google';
 
 const Navbar = () => {
   const [userRole, setUserRole] = useState('admin'); // Set the default role as admin
+  const [anchorEl, setAnchorEl] = useState(null);
 
   // Function to switch user role
   const switchRole = (role) => {
     setUserRole(role);
   };
-  const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const handleMenuClick = (event) => {
+  // Function to handle dropdown menu open
+  const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
+  // Function to handle dropdown menu close
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
 
   return (
     <AppBar position="static" sx={{ borderBottom: '2px solid #333' }}>
-       <Toolbar>
+     
+      <Toolbar>
+      <IconButton
+          edge="start"
+          color="inherit"
+          aria-label="menu"
+          aria-controls="menu"
+          aria-haspopup="true"
+          onClick={handleMenuOpen}
+        >
+          <MenuIcon />
+          <ArrowDropDownIcon />
+        </IconButton>
+        <Menu
+          id="menu"
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <MenuItem component={Link} to="/userreg" onClick={handleMenuClose}>User Registration</MenuItem>
+          <MenuItem component={Link} to="/empreg" onClick={handleMenuClose}>Employee Registration</MenuItem>
+          <MenuItem component={Link} to="/adminreg" onClick={handleMenuClose}>Admin Registration</MenuItem>
+          <MenuItem component={Link} to="/DocotorReg" onClick={handleMenuClose}>Doctor Registration</MenuItem>
+          <MenuItem component={Link} to="/accountsreg" onClick={handleMenuClose}>Account Registration</MenuItem>
+          <MenuItem component={Link} to="/login" onClick={handleMenuClose}>User Login</MenuItem>
+          <MenuItem component={Link} to="/login" onClick={handleMenuClose}>Employee Login</MenuItem>
+          <MenuItem component={Link} to="/admin" onClick={handleMenuClose}>Admin Login</MenuItem>
+          <MenuItem component={Link} to="/DocotorReg" onClick={handleMenuClose}>Doctor Login</MenuItem>
+          <MenuItem component={Link} to="/accountsreg" onClick={handleMenuClose}>Account Login</MenuItem>
+        </Menu>
         <IconButton
           edge="start"
           color="inherit"
@@ -46,311 +82,95 @@ const Navbar = () => {
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           Hospital Management System
         </Typography>
-        <Button
+       
+          <MenuItem
+            color="inherit"
+            component={Link}
+            to="/DocotorReg"
+            startIcon={<WorkIcon />}
+            onClick={handleMenuClose}
+          >
+            Apply for Doctor
+          </MenuItem>
+        
+        
+          <MenuItem
+            color="inherit"
+            component={Link}
+            to="/userDashboard"
+            onClick={handleMenuClose}
+          >
+            User Dashboard
+          </MenuItem>
+        
+        <MenuItem
           color="inherit"
           component={Link}
-          to="/facilities"
-          startIcon={<AssignmentIcon />}
-          sx={{ borderRight: '2px solid #333' }}
-        >
-          Facilities
-        </Button>
-        <Button
-          color="inherit"
-          component={Link}
-          to="/DocotorReg"
-          startIcon={<WorkIcon />}
-          sx={{ borderRight: '2px solid #333' }}
-        >
-          Apply for Doctor
-        </Button>
-        <Button
-          color="inherit"
-          component={Link}
-          to="/userreg"
-          startIcon={<WorkIcon />}
-          sx={{ borderRight: '2px solid #333' }}
+          to="/apply-medical-job"
+          startIcon={<LocalPharmacyIcon />}
+          onClick={handleMenuClose}
         >
           Apply for Medical Store Job
-        </Button>
-        {userRole === 'admin' && (
-        <Button
+        </MenuItem>
+        <MenuItem
           color="inherit"
           component={Link}
-          to="/facilities"
+          to="/Blood"
           startIcon={<AssignmentIcon />}
-          sx={{ borderRight: '2px solid #333' }}
+          onClick={handleMenuClose}
         >
-          Facilities
-        </Button>
-      )}
-      {userRole === 'user' && (
-        <Button
-          color="inherit"
-          component={Link}
-          to="/userDashboard"
-          startIcon={<Avatar alt="User Avatar" src="/static/images/avatar/1.jpg" />}
-          sx={{ borderRight: '2px solid #333' }}
-        >
-          User Dashboard
-        </Button>
-      )}
-      
-      <Avatar alt="User Avatar" onClick={() => switchRole('admin : user')} src="/static/images/avatar/1.jpg" />
-      {/* Add buttons for other roles */}
-        
+          Donate to the Blood Bank
+        </MenuItem>
+        <Avatar
+          alt="User Avatar"
+          onClick={() => switchRole('admin : user')}
+          src="/static/images/avatar/1.jpg"
+        />
+        {/* Add buttons for other roles */}
       </Toolbar>
       <Toolbar>
-        <Button
-          color="inherit"
-          aria-controls="get-care-menu"
-          aria-haspopup="true"
-          onClick={handleMenuClick}
-          sx={{ borderRight: '2px solid #333' }}
-        >
-          Get Care
-        </Button>
-        <Menu
-          id="get-care-menu"
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-        >
-          <MenuItem component={Link} to="/locations" onClick={handleMenuClose}>
-            Locations
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/make-appointment"
-            onClick={handleMenuClose}
-          >
-            Make an Appointment
-          </MenuItem>
-          <MenuItem component={Link} to="/primary-care" onClick={handleMenuClose}>
-            Primary Care
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/specialty-care"
-            onClick={handleMenuClose}
-          >
-            Specialty Care
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/departments"
-            onClick={handleMenuClose}
-          >
-            Departments
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/health-library"
-            onClick={handleMenuClose}
-          >
-            Health Library
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/clinical-trials"
-            onClick={handleMenuClose}
-          >
-            Clinical Trials
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/second-opinion"
-            onClick={handleMenuClose}
-          >
-            Getting a Second Opinion
-          </MenuItem>
-        </Menu>
-        <Button
-          color="inherit"
-          aria-controls="plan-visit-menu"
-          aria-haspopup="true"
-          onClick={handleMenuClick}
-          sx={{ borderRight: '2px solid #333' }}
-        >
-          Plan Your Visit
-        </Button>
-        <Menu
-          id="plan-visit-menu"
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-        >
-          <MenuItem
-            component={Link}
-            to="/inpatient-stays"
-            onClick={handleMenuClose}
-          >
-            Inpatient and Hospital Stays
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/primary-care"
-            onClick={handleMenuClose}
-          >
-            Primary Care
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/specialty-care"
-            onClick={handleMenuClose}
-          >
-            Specialty Care
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/emergency-visits"
-            onClick={handleMenuClose}
-          >
-            Emergency Visits
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/virtual-visit"
-            onClick={handleMenuClose}
-          >
-            Virtual Visit Instructions
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/directions"
-            onClick={handleMenuClose}
-          >
-            Directions and Parking
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/visiting-hours"
-            onClick={handleMenuClose}
-          >
-            Visiting Hours and Guidelines
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/medical-records"
-            onClick={handleMenuClose}
-          >
-            Medical Records
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/insurance-billing"
-            onClick={handleMenuClose}
-          >
-            Insurance and Billing
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/patient-portal"
-            onClick={handleMenuClose}
-          >
-            Patient Portal
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/international-patients"
-            onClick={handleMenuClose}
-          >
-            International Patients
-          </MenuItem>
-        </Menu>
-        <Button
-          color="inherit"
-          aria-controls="make-difference-menu"
-          aria-haspopup="true"
-          onClick={handleMenuClick}
-          sx={{ borderRight: '2px solid #333' }}
-        >
-          Make a Difference
-        </Button>
-        <Menu
-          id="make-difference-menu"
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-        >
-          <MenuItem
-            component={Link}
-            to="/hospital-foundation"
-            onClick={handleMenuClose}
-          >
-            Children's National Hospital Foundation
-          </MenuItem>
-          <MenuItem component={Link} to="/volunteer" onClick={handleMenuClose}>
-            Volunteer
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/donate-items"
-            onClick={handleMenuClose}
-          >
-            Donate Items
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/donate-blood"
-            onClick={handleMenuClose}
-          >
-            Donate Blood
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/advisory-council"
-            onClick={handleMenuClose}
-          >
-            Patient and Family Advisory Council
-          </MenuItem>
-          <MenuItem component={Link} to="/give-now" onClick={handleMenuClose}>
-            Give Now
-          </MenuItem>
-        </Menu>
-        <Button
+        <MenuItem
           color="inherit"
           component={Link}
           to="/find-doctor"
-          sx={{ borderRight: '2px solid #333' }}
+          onClick={handleMenuClose}
         >
           Find a Doctor
-        </Button>
-        <Button
+        </MenuItem>
+        <MenuItem
           color="inherit"
           component={Link}
           to="/make-appointment"
-          sx={{ borderRight: '2px solid #333' }}
+          onClick={handleMenuClose}
         >
           Make an Appointment
-        </Button>
-        <Button
-          color="inherit"
-          component={Link}
-          to="/patient-portal"
-          sx={{ borderRight: '2px solid #333' }}
-        >
-          Patient Portal
-        </Button>
-        <Button
+        </MenuItem>
+        
+        <MenuItem
           color="inherit"
           component={Link}
           to="/medform/view/only"
-          sx={{ borderRight: '2px solid #333' }}
+          onClick={handleMenuClose}
         >
           Medical Records
-        </Button>
-        <Button
+        </MenuItem>
+        <MenuItem
           color="inherit"
           component={Link}
           to="/locations"
-          sx={{ borderRight: '2px solid #333' }}
+          onClick={handleMenuClose}
         >
           Find a Location
-        </Button>
-        <Button color="inherit" component={Link} to="/pay-bill">
+        </MenuItem>
+        <MenuItem
+          color="inherit"
+          component={Link}
+          to="/pay-bill"
+          onClick={handleMenuClose}
+        >
           Pay My Bill
-        </Button>
+        </MenuItem>
+        <MenuItem component={Link} to="/plan" onClick={handleMenuClose}>Insurance Plan</MenuItem>
       </Toolbar>
     </AppBar>
   );

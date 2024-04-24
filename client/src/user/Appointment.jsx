@@ -1,19 +1,22 @@
 import React from "react";
+import { useParams } from "react-router-dom"; // Import useParams hook
 import Hero from "./Hero";
 import AppointmentForm from "./AppointmentForm";
 
 const Appointment = () => {
-  // Mock user object
+  // Retrieve URL parameters
+  const { userId, userName } = useParams();
+
+  // Create a user object using the retrieved parameters
   const user = {
-    id: "65d0bc360c824956285cda07", 
-    name: "sairocky656",
-   
+    id: userId,
+    name: userName,
   };
 
   return (
     <>
       <Hero
-        title={"Schedule Your Appointment | ZeeCare Medical Institute"}
+        title={"Schedule Your Appointment | MyStudentClinic Medical Institute"}
         imageUrl={"/signin.png"}
       />
       <AppointmentForm user={user}/>

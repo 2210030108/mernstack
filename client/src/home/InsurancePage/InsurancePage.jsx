@@ -13,10 +13,22 @@ const InsurancePage = () => {
           <Typography variant="body1" paragraph>
             Life insurance is a contract in which a policyholder pays premiums in exchange for a lump-sum death benefit that may be paid to the policyholder's beneficiaries.
           </Typography>
-          {/* Add more content */}
+          {/* Add images, if necessary */}
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6}>
+              <img src="/path/to/image1.jpg" alt="Life Insurance" />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <img src="/path/to/image2.jpg" alt="Life Insurance" />
+            </Grid>
+          </Grid>
         </Container>
       </section>
 
+      {/* Add more sections with similar structure */}
+      {/* You can repeat the pattern with different colors, images, and content */}
+
+      {/* Example */}
       <section className="section" style={{ backgroundColor: '#e0e0e0', padding: '50px 0' }}>
         <Container>
           <Typography variant="h3" gutterBottom>
@@ -25,10 +37,19 @@ const InsurancePage = () => {
           <Typography variant="body1" paragraph>
             The cost of life insurance depends on several factors, such as age, medical history, and lifestyle. The coverage amount and policy type also play a significant role in determining life insurance costs.
           </Typography>
-          {/* Add more content */}
+          {/* Add images, if necessary */}
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6}>
+              <img src="/path/to/image3.jpg" alt="Life Insurance Cost" />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <img src="/path/to/image4.jpg" alt="Life Insurance Cost" />
+            </Grid>
+          </Grid>
         </Container>
       </section>
 
+      {/* Example Accordion */}
       <section className="section" style={{ backgroundColor: '#f0f0f0', padding: '50px 0' }}>
         <Container>
           <Typography variant="h3" gutterBottom>
@@ -49,41 +70,8 @@ const InsurancePage = () => {
         </Container>
       </section>
 
-      <section className="section" style={{ backgroundColor: '#e0e0e0', padding: '50px 0' }}>
-        <Container>
-          <Typography variant="h3" gutterBottom>
-            What is the best life insurance policy for me?
-          </Typography>
-          <Typography variant="body1" paragraph>
-            As every person's situation is different, you'll need to choose which product is right for you.
-          </Typography>
-          {/* Add more content */}
-        </Container>
-      </section>
+      {/* Add more sections as needed */}
 
-      <section className="section" style={{ backgroundColor: '#f0f0f0', padding: '50px 0' }}>
-        <Container>
-          <Typography variant="h3" gutterBottom>
-            Why do you need life insurance?
-          </Typography>
-          <Typography variant="body1" paragraph>
-            Life insurance helps you plan ahead and provides long-term financial security for your family when they would need it most.
-          </Typography>
-          {/* Add more content */}
-        </Container>
-      </section>
-
-      <section className="section" style={{ backgroundColor: '#e0e0e0', padding: '50px 0' }}>
-        <Container>
-          <Typography variant="h3" gutterBottom>
-            Need more information about Life Insurance?
-          </Typography>
-          <Typography variant="body1" paragraph>
-            You can reach us at (888) 532-5433
-          </Typography>
-          {/* Add more content */}
-        </Container>
-      </section>
     </div>
   );
 };
