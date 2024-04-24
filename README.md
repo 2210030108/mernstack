@@ -11,7 +11,7 @@ Reporting: Generate reports on various aspects of hospital operations.
 Installation
 Clone the repository:
 
-git clone https://github.com/yourusername/hospital-management-system.git
+git clone https://github.com/2210030108/mernstack.git
 Navigate to the project directory:
 
 cd hospital-management-system
